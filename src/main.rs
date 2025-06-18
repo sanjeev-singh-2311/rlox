@@ -21,8 +21,12 @@ pub fn run_file(path: String) -> Result<(), u8> {
 }
 
 pub fn main() {
-    let executable_relative_path = env::args().next();
-    let argv: Vec<String> = env::args().skip(1).collect();
+    let mut arg_iter = env::args();
+    let executable_relative_path = match arg_iter.next() {
+        Some(s) => s,
+        None => "IDK something changed so the file name is not here".to_string(),
+    };
+    let argv: Vec<String> = arg_iter.collect();
     let argc = argv.len();
 
     if argc > 1 {
