@@ -26,7 +26,6 @@ pub fn main() {
             _ => (),
         }
     } else {
-        println!("Run a prompt here")
-        // run_prompt()
+        utils::run_prompt()
     }
 }
