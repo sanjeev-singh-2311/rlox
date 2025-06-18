@@ -1,24 +1,9 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 
-use std::{env, fs, path::Path, process::exit};
+mod utils;
 
-pub fn run_file(path: String) -> Result<(), u8> {
-    let file = fs::read(Path::new(&path));
-    match file {
-        Ok(content) => {
-            let program = match String::from_utf8(content) {
-                Ok(s) => s,
-                Err(_) => return Err(1),
-            };
-            // TODO -> make the parser run for the program string
-            // run(program);
-            println!("{program}");
-            Ok(())
-        }
-        Err(e) => Err(1),
-    }
-}
+use std::{env, process::exit};
 
 pub fn main() {
     let mut arg_iter = env::args();
@@ -34,7 +19,7 @@ pub fn main() {
         exit(64);
     }
     if argc == 1 {
-        match run_file(argv[0].to_owned()) {
+        match utils::run_file(argv[0].to_owned()) {
             Err(n) => {
                 panic!("Some error occured")
             }
