@@ -20,12 +20,17 @@ pub fn main() {
     }
     if argc == 1 {
         match utils::run_file(argv[0].to_owned()) {
-            Err(n) => {
-                panic!("Some error occured")
+            Err(e) => {
+                println!("{e:?}")
             }
             _ => (),
         }
     } else {
-        utils::run_prompt()
+        match utils::run_prompt() {
+            Err(e) => {
+                println!("{e:?}")
+            }
+            _ => (),
+        }
     }
 }
