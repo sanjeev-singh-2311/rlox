@@ -1,6 +1,9 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 
+mod error;
+mod token;
+mod token_type;
 mod utils;
 
 use std::{env, process::exit};

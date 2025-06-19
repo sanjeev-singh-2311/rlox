@@ -1,3 +1,5 @@
+use super::error::show_error;
+use super::token::Token;
 use std::io::{BufRead, Write};
 use std::{fs, io, path::Path};
 
@@ -30,4 +32,13 @@ pub fn run_prompt() -> Result<(), Box<dyn std::error::Error>> {
         io::stdout().flush()?;
     }
     Ok(())
+}
+
+fn run(source: String) {
+    let scanner = Scanner::new(source);
+    let tokens: Vec<Token> = scanner.scan_token();
+
+    for token in tokens.into_iter() {
+        println!("{token:?}");
+    }
 }
