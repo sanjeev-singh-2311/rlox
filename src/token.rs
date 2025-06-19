@@ -5,12 +5,17 @@ use std::fmt::Display;
 pub struct Token {
     tok_type: TokenType,
     lexeme: String,
-    literal: Object,
+    literal: Box<dyn std::any::Any>,
     line: u32,
 }
 
 impl Token {
-    pub fn new(tok_type: TokenType, lexeme: String, literal: Object, line: u32) -> Token {
+    pub fn new(
+        tok_type: TokenType,
+        lexeme: String,
+        literal: Box<dyn std::any::Any>,
+        line: u32,
+    ) -> Token {
         Token {
             tok_type,
             lexeme,

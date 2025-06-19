@@ -35,9 +35,9 @@ pub fn run_prompt() -> Result<(), Box<dyn std::error::Error>> {
 }
 
 fn run(source: String) {
-    let scanner = Scanner::new(source);
-    let tokens: Vec<Token> = scanner.scan_token();
-
+    let mut scanner = Scanner::new(source);
+    scanner.scan_all_tokens();
+    let tokens: Vec<Token> = scanner.tokens;
     for token in tokens.into_iter() {
         println!("{token:?}");
     }
