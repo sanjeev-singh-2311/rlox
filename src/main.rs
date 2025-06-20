@@ -3,8 +3,7 @@
 
 mod error;
 mod scanner;
-mod token;
-mod token_type;
+mod tokens;
 mod utils;
 
 use std::{env, process::exit};

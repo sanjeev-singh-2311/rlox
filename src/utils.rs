@@ -1,6 +1,6 @@
-use super::error::show_error;
-use super::scanner::Scanner;
-use super::token::Token;
+use crate::error::show_error;
+use crate::scanner::Scanner;
+use crate::tokens::token::Token;
 use std::io::{BufRead, Write};
 use std::{fs, io, path::Path};
 

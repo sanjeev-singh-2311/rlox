@@ -1,6 +1,6 @@
-use super::token::Token;
+use crate::tokens::{token::Token, token_type::TokenType};
 
-use crate::{error::show_error, token_type::TokenType};
+use crate::error::show_error;
 
 pub struct Scanner {
     source: String,
