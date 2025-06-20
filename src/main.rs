@@ -6,13 +6,29 @@ mod tokens;
 mod utility;
 
 use std::{env, process::exit};
+use utility::error as rlox_error;
 use utility::utils;
 
 pub fn main() {
     let mut arg_iter = env::args();
+
+    /*
+        WARN: I literally have no idea what do in case some platform does not give exectable path as
+        first arguement but still passes the other args, I'll actually be cooked if that were to happen
+        Might actually have to compare the `executable_relative_path` variable to the executable
+        path or something AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHH!!
+    */
+
     let executable_relative_path = match arg_iter.next() {
         Some(s) => s,
-        None => "IDK something changed so the file name is not here".to_string(),
+        None => {
+            rlox_error::show_error(
+                0,
+                "not only are the args missing, the executable path itself is missing lol"
+                    .to_owned(),
+            );
+            exit(64)
+        }
     };
     let argv: Vec<String> = arg_iter.collect();
     let argc = argv.len();
