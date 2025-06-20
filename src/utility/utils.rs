@@ -1,4 +1,4 @@
-use crate::error::show_error;
+use super::error::show_error;
 use crate::scanner::Scanner;
 use crate::tokens::token::Token;
 use std::io::{BufRead, Write};

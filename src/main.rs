@@ -1,12 +1,12 @@
 #![allow(unused_variables)]
 #![allow(dead_code)]
 
-mod error;
 mod scanner;
 mod tokens;
-mod utils;
+mod utility;
 
 use std::{env, process::exit};
+use utility::utils;
 
 pub fn main() {
     let mut arg_iter = env::args();
