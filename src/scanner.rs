@@ -112,4 +112,20 @@ impl Scanner {
         }
         false
     }
+
+    fn lex_string(&mut self) {
+        while !self.is_at_end() && self.lookahead() != '"' {
+            if self.lookahead() == '\n' {
+                self.line += 1;
+            }
+            self.advance();
+        }
+        if self.is_at_end() {
+            show_error(self.line, "Unterminated string".to_owned());
+        }
+        self.advance();
+
+        let value = self.source[self.start + 1..self.current - 1].to_owned();
+        self.add_token(TokenType::STRING, Some(Box::new(value)));
+    }
 }
