@@ -61,7 +61,17 @@ impl Scanner {
             '+' => self.add_token(TokenType::PLUS),
             ';' => self.add_token(TokenType::SEMICOLON),
             '*' => self.add_token(TokenType::STAR),
-            ' ' | '\t' => (), // Early Return
+            '/' => {
+                if self.check_curr('/') {
+                    while !self.is_at_end() && self.lookahead() != '\n' {
+                        self.advance();
+                    }
+                } else {
+                    self.add_token(TokenType::SLASH)
+                }
+            }
+
+            ' ' | '\t' | '\r' => (), // Early Return
             '\n' => self.line += 1,
             _ => show_error(self.line, "Unexpected character".to_owned()),
         }
@@ -78,9 +88,24 @@ impl Scanner {
         self.source_iter[local_current]
     }
 
+    fn lookahead(&self) -> char {
+        if self.is_at_end() {
+            return '\0';
+        }
+        self.source_iter[self.current]
+    }
+
     fn add_token_in_vec(&mut self, token_type: TokenType, literal: Box<dyn std::any::Any>) {
         let substr = self.source[self.start..self.current].to_owned();
         self.tokens
             .push(Token::new(token_type, substr, literal, self.line));
+    }
+
+    fn check_curr(&mut self, expected: char) -> bool {
+        if self.lookahead() == expected {
+            self.advance();
+            return true;
+        }
+        false
     }
 }
