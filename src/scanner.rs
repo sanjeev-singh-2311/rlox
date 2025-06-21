@@ -51,25 +51,26 @@ impl Scanner {
         let c = self.advance();
 
         match c {
-            '(' => self.add_token(TokenType::LEFT_PAREN),
-            ')' => self.add_token(TokenType::RIGHT_PAREN),
-            '{' => self.add_token(TokenType::LEFT_BRACE),
-            '}' => self.add_token(TokenType::RIGHT_BRACE),
-            ',' => self.add_token(TokenType::COMMA),
-            '.' => self.add_token(TokenType::DOT),
-            '-' => self.add_token(TokenType::MINUS),
-            '+' => self.add_token(TokenType::PLUS),
-            ';' => self.add_token(TokenType::SEMICOLON),
-            '*' => self.add_token(TokenType::STAR),
+            '(' => self.add_token(TokenType::LEFT_PAREN, None),
+            ')' => self.add_token(TokenType::RIGHT_PAREN, None),
+            '{' => self.add_token(TokenType::LEFT_BRACE, None),
+            '}' => self.add_token(TokenType::RIGHT_BRACE, None),
+            ',' => self.add_token(TokenType::COMMA, None),
+            '.' => self.add_token(TokenType::DOT, None),
+            '-' => self.add_token(TokenType::MINUS, None),
+            '+' => self.add_token(TokenType::PLUS, None),
+            ';' => self.add_token(TokenType::SEMICOLON, None),
+            '*' => self.add_token(TokenType::STAR, None),
             '/' => {
                 if self.check_curr('/') {
                     while !self.is_at_end() && self.lookahead() != '\n' {
                         self.advance();
                     }
                 } else {
-                    self.add_token(TokenType::SLASH)
+                    self.add_token(TokenType::SLASH, None)
                 }
             }
+            '"' => self.lex_string(),
 
             ' ' | '\t' | '\r' => (), // Early Return
             '\n' => self.line += 1,
@@ -78,8 +79,11 @@ impl Scanner {
         ()
     }
 
-    fn add_token(&mut self, tok_type: TokenType) {
-        self.add_token_in_vec(tok_type, Box::<Option<i32>>::new(None))
+    fn add_token(&mut self, tok_type: TokenType, literal: Option<Box<dyn std::any::Any>>) {
+        match literal {
+            Some(lit) => self.add_token_in_vec(tok_type, lit),
+            None => self.add_token_in_vec(tok_type, Box::<Option<i8>>::new(None)),
+        }
     }
 
     fn advance(&mut self) -> char {
