@@ -150,6 +150,35 @@ impl Scanner {
                     self.add_token(TokenType::SLASH, None)
                 }
             }
+            '<' => {
+                if self.check_curr('=') {
+                    self.add_token(TokenType::LESS_EQUAL, None);
+                } else {
+                    self.add_token(TokenType::LESS, None);
+                }
+            }
+            '>' => {
+                if self.check_curr('=') {
+                    self.add_token(TokenType::GREATER_EQUAL, None);
+                } else {
+                    self.add_token(TokenType::GREATER, None);
+                }
+            }
+            '=' => {
+                if self.check_curr('=') {
+                    self.add_token(TokenType::EQUAL_EQUAL, None);
+                } else {
+                    self.add_token(TokenType::EQUAL, None);
+                }
+            }
+            '!' => {
+                if self.check_curr('=') {
+                    self.add_token(TokenType::BANG_EQUAL, None);
+                } else {
+                    self.add_token(TokenType::BANG, None);
+                }
+            }
+
             '"' => self.lex_string(),
 
             ' ' | '\t' | '\r' => (), // Early Return
