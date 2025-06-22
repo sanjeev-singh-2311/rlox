@@ -68,7 +68,7 @@ impl Scanner {
             .to_owned()
             .parse::<f32>();
         match literal {
-            Ok(n) => self.add_token(TokenType::NUMBER, Some(Box::new(literal))),
+            Ok(_) => self.add_token(TokenType::NUMBER, Some(Box::new(literal))),
             Err(_) => show_error(self.line, "Invalid number literal somehow".to_owned()),
         }
     }

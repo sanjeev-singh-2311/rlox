@@ -1,6 +1,3 @@
-#![allow(unused_variables)]
-#![allow(dead_code)]
-
 mod scanner;
 mod tokens;
 mod utility;
@@ -19,7 +16,7 @@ pub fn main() {
         path or something AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHH!!
     */
 
-    let executable_relative_path = match arg_iter.next() {
+    let _executable_relative_path = match arg_iter.next() {
         Some(s) => s,
         None => {
             rlox_error::show_error(
