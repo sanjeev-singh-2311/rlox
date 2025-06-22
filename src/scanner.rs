@@ -47,7 +47,7 @@ impl Scanner {
     }
 
     fn check_curr(&mut self, expected: char) -> bool {
-        if self.lookahead() == expected {
+        if self.lookahead_1() == expected {
             self.advance();
             return true;
         }
@@ -55,12 +55,12 @@ impl Scanner {
     }
 
     fn lex_number(&mut self) {
-        while self.char_is_digit(self.lookahead()) {
+        while self.char_is_digit(self.lookahead_1()) {
             self.advance();
         }
-        if self.lookahead() == '.' && self.char_is_digit(self.lookahead_2()) {
+        if self.lookahead_1() == '.' && self.char_is_digit(self.lookahead_2()) {
             self.advance();
-            while self.char_is_digit(self.lookahead()) {
+            while self.char_is_digit(self.lookahead_1()) {
                 self.advance();
             }
         }
@@ -74,8 +74,8 @@ impl Scanner {
     }
 
     fn lex_string(&mut self) {
-        while !self.is_at_end() && self.lookahead() != '"' {
-            if self.lookahead() == '\n' {
+        while !self.is_at_end() && self.lookahead_1() != '"' {
+            if self.lookahead_1() == '\n' {
                 self.line += 1;
             }
             self.advance();
@@ -89,7 +89,7 @@ impl Scanner {
         self.add_token(TokenType::STRING, Some(Box::new(value)));
     }
 
-    fn lookahead(&self) -> char {
+    fn lookahead_1(&self) -> char {
         if self.is_at_end() {
             return '\0';
         }
@@ -143,7 +143,7 @@ impl Scanner {
             '*' => self.add_token(TokenType::STAR, None),
             '/' => {
                 if self.check_curr('/') {
-                    while !self.is_at_end() && self.lookahead() != '\n' {
+                    while !self.is_at_end() && self.lookahead_1() != '\n' {
                         self.advance();
                     }
                 } else {
