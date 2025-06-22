@@ -74,7 +74,13 @@ impl Scanner {
 
             ' ' | '\t' | '\r' => (), // Early Return
             '\n' => self.line += 1,
-            _ => show_error(self.line, "Unexpected character".to_owned()),
+            _ => {
+                if self.char_is_digit(c) {
+                    self.lex_number()
+                } else {
+                    show_error(self.line, "Unexpected character".to_owned())
+                }
+            }
         }
         ()
     }
@@ -92,6 +98,25 @@ impl Scanner {
         self.source_iter[local_current]
     }
 
+    fn lex_number(&mut self) {
+        while self.char_is_digit(self.lookahead()) {
+            self.advance();
+        }
+        if self.lookahead() == '.' && self.char_is_digit(self.lookahead_2()) {
+            self.advance();
+            while self.char_is_digit(self.lookahead()) {
+                self.advance();
+            }
+        }
+        let literal = self.source[self.start..self.current]
+            .to_owned()
+            .parse::<f32>();
+        match literal {
+            Ok(n) => self.add_token(TokenType::NUMBER, Some(Box::new(literal))),
+            Err(_) => show_error(self.line, "Invalid number literal somehow".to_owned()),
+        }
+    }
+
     fn lookahead(&self) -> char {
         if self.is_at_end() {
             return '\0';
@@ -99,10 +124,21 @@ impl Scanner {
         self.source_iter[self.current]
     }
 
+    fn lookahead_2(&self) -> char {
+        if self.current + 1 >= self.source_iter.len() {
+            return '\0';
+        }
+        self.source_iter[self.current + 1]
+    }
+
     fn add_token_in_vec(&mut self, token_type: TokenType, literal: Box<dyn std::any::Any>) {
         let substr = self.source[self.start..self.current].to_owned();
         self.tokens
             .push(Token::new(token_type, substr, literal, self.line));
+    }
+
+    fn char_is_digit(&self, c: char) -> bool {
+        c >= '0' && c <= '9'
     }
 
     fn check_curr(&mut self, expected: char) -> bool {
