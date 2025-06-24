@@ -2,6 +2,8 @@ use crate::tokens::{token::Token, token_type::TokenType};
 
 use crate::utility::error::show_error;
 
+use std::collections::HashMap;
+
 pub struct Scanner {
     source: String,
     source_iter: Vec<char>,
@@ -9,13 +11,34 @@ pub struct Scanner {
     start: usize,
     current: usize,
     line: u32,
+    keyword_map: HashMap<String, TokenType>,
 }
 
 impl Scanner {
     pub fn new(source: String) -> Scanner {
+        let keyword_map = HashMap::from([
+            ("and".to_owned(), TokenType::AND),
+            ("class".to_owned(), TokenType::CLASS),
+            ("else".to_owned(), TokenType::ELSE),
+            ("false".to_owned(), TokenType::FALSE),
+            ("for".to_owned(), TokenType::FOR),
+            ("fun".to_owned(), TokenType::FUN),
+            ("if".to_owned(), TokenType::IF),
+            ("nil".to_owned(), TokenType::NIL),
+            ("or".to_owned(), TokenType::OR),
+            ("print".to_owned(), TokenType::PRINT),
+            ("return".to_owned(), TokenType::RETURN),
+            ("super".to_owned(), TokenType::SUPER),
+            ("this".to_owned(), TokenType::THIS),
+            ("true".to_owned(), TokenType::TRUE),
+            ("var".to_owned(), TokenType::VAR),
+            ("while".to_owned(), TokenType::WHILE),
+        ]);
+
         Scanner {
             source_iter: source.chars().collect(),
             source,
+            keyword_map,
             tokens: vec![],
             start: 0,
             current: 0,
@@ -40,6 +63,14 @@ impl Scanner {
         let local_current = self.current;
         self.current += 1;
         self.source_iter[local_current]
+    }
+
+    fn char_is_alpha(&self, c: char) -> bool {
+        (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
+    }
+
+    fn char_is_alnum(&self, c: char) -> bool {
+        self.char_is_alpha(c) || self.char_is_digit(c)
     }
 
     fn char_is_digit(&self, c: char) -> bool {
@@ -71,6 +102,19 @@ impl Scanner {
             Ok(_) => self.add_token(TokenType::NUMBER, Some(Box::new(literal))),
             Err(_) => show_error(self.line, "Invalid number literal somehow".to_owned()),
         }
+    }
+
+    fn lex_identifier(&mut self) {
+        while self.char_is_alnum(self.lookahead_1()) {
+            self.advance();
+        }
+
+        let text = self.source[self.start..self.current].to_owned();
+        let text_type = self
+            .keyword_map
+            .get(&text)
+            .unwrap_or(&TokenType::IDENTIFIER);
+        self.add_token(text_type.clone(), None);
     }
 
     fn lex_string(&mut self) {
@@ -186,6 +230,8 @@ impl Scanner {
             _ => {
                 if self.char_is_digit(c) {
                     self.lex_number()
+                } else if self.char_is_alpha(c) {
+                    self.lex_identifier();
                 } else {
                     show_error(self.line, "Unexpected character".to_owned())
                 }
