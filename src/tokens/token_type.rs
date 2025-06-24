@@ -46,3 +46,30 @@ pub enum TokenType {
     WHILE,
     EOF,
 }
+
+// Clone trait to copy the values out of the HashMap, dont really think I need more than these so I
+// just bound teh default match to Identifier.. but we'll see
+impl Clone for TokenType {
+    fn clone(&self) -> Self {
+        match self {
+            TokenType::AND => TokenType::AND,
+            TokenType::CLASS => TokenType::CLASS,
+            TokenType::ELSE => TokenType::ELSE,
+            TokenType::FALSE => TokenType::FALSE,
+            TokenType::FUN => TokenType::FUN,
+            TokenType::FOR => TokenType::FOR,
+            TokenType::IF => TokenType::IF,
+            TokenType::NIL => TokenType::NIL,
+            TokenType::OR => TokenType::OR,
+            TokenType::PRINT => TokenType::PRINT,
+            TokenType::RETURN => TokenType::RETURN,
+            TokenType::SUPER => TokenType::SUPER,
+            TokenType::THIS => TokenType::THIS,
+            TokenType::TRUE => TokenType::TRUE,
+            TokenType::VAR => TokenType::VAR,
+            TokenType::WHILE => TokenType::WHILE,
+            TokenType::EOF => TokenType::EOF,
+            _ => TokenType::IDENTIFIER,
+        }
+    }
+}
