@@ -65,12 +65,12 @@ impl Scanner {
         self.source_iter[local_current]
     }
 
-    fn char_is_alpha(&self, c: char) -> bool {
-        (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
-    }
-
     fn char_is_alnum(&self, c: char) -> bool {
         self.char_is_alpha(c) || self.char_is_digit(c)
+    }
+
+    fn char_is_alpha(&self, c: char) -> bool {
+        (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
     }
 
     fn char_is_digit(&self, c: char) -> bool {
@@ -83,6 +83,29 @@ impl Scanner {
             return true;
         }
         false
+    }
+
+    fn is_at_end(&self) -> bool {
+        if self.current == self.source_iter.len() {
+            return true;
+        }
+        // DOUBT: should the program error out on a NULL character, read and tokenize it, or stop
+        // reading and ignore things after it???
+        let c = self.source_iter[self.current];
+        c == '\0'
+    }
+
+    fn lex_identifier(&mut self) {
+        while self.char_is_alnum(self.lookahead_1()) {
+            self.advance();
+        }
+
+        let text = self.source[self.start..self.current].to_owned();
+        let text_type = self
+            .keyword_map
+            .get(&text)
+            .unwrap_or(&TokenType::IDENTIFIER);
+        self.add_token(text_type.clone(), None);
     }
 
     fn lex_number(&mut self) {
@@ -102,19 +125,6 @@ impl Scanner {
             Ok(_) => self.add_token(TokenType::NUMBER, Some(Box::new(literal))),
             Err(_) => show_error(self.line, "Invalid number literal somehow".to_owned()),
         }
-    }
-
-    fn lex_identifier(&mut self) {
-        while self.char_is_alnum(self.lookahead_1()) {
-            self.advance();
-        }
-
-        let text = self.source[self.start..self.current].to_owned();
-        let text_type = self
-            .keyword_map
-            .get(&text)
-            .unwrap_or(&TokenType::IDENTIFIER);
-        self.add_token(text_type.clone(), None);
     }
 
     fn lex_string(&mut self) {
@@ -145,16 +155,6 @@ impl Scanner {
             return '\0';
         }
         self.source_iter[self.current + 1]
-    }
-
-    fn is_at_end(&self) -> bool {
-        if self.current == self.source_iter.len() {
-            return true;
-        }
-        // DOUBT: should the program error out on a NULL character, read and tokenize it, or stop
-        // reading and ignore things after it???
-        let c = self.source_iter[self.current];
-        c == '\0'
     }
 
     pub fn scan_all_tokens(&mut self) -> () {
