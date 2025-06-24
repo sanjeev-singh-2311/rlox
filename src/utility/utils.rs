@@ -6,9 +6,9 @@ use std::{fs, io, path::Path};
 pub fn run_file(path: String) -> Result<(), Box<dyn std::error::Error>> {
     let file = fs::read(Path::new(&path))?;
     let program = String::from_utf8(file)?;
-    // TODO: make the parser run for the program string
-    // run(program);
-    println!("{program}");
+
+    run(program);
+
     Ok(())
 }
 
