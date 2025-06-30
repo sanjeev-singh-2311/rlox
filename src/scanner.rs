@@ -16,24 +16,27 @@ pub struct Scanner {
 
 impl Scanner {
     pub fn new(source: String) -> Scanner {
-        let keyword_map = HashMap::from([
-            ("and".to_owned(), TokenType::AND),
-            ("class".to_owned(), TokenType::CLASS),
-            ("else".to_owned(), TokenType::ELSE),
-            ("false".to_owned(), TokenType::FALSE),
-            ("for".to_owned(), TokenType::FOR),
-            ("fun".to_owned(), TokenType::FUN),
-            ("if".to_owned(), TokenType::IF),
-            ("nil".to_owned(), TokenType::NIL),
-            ("or".to_owned(), TokenType::OR),
-            ("print".to_owned(), TokenType::PRINT),
-            ("return".to_owned(), TokenType::RETURN),
-            ("super".to_owned(), TokenType::SUPER),
-            ("this".to_owned(), TokenType::THIS),
-            ("true".to_owned(), TokenType::TRUE),
-            ("var".to_owned(), TokenType::VAR),
-            ("while".to_owned(), TokenType::WHILE),
-        ]);
+        let keyword_map: HashMap<String, TokenType> = [
+            ("and", TokenType::AND),
+            ("class", TokenType::CLASS),
+            ("else", TokenType::ELSE),
+            ("false", TokenType::FALSE),
+            ("for", TokenType::FOR),
+            ("fun", TokenType::FUN),
+            ("if", TokenType::IF),
+            ("nil", TokenType::NIL),
+            ("or", TokenType::OR),
+            ("print", TokenType::PRINT),
+            ("return", TokenType::RETURN),
+            ("super", TokenType::SUPER),
+            ("this", TokenType::THIS),
+            ("true", TokenType::TRUE),
+            ("var", TokenType::VAR),
+            ("while", TokenType::WHILE),
+        ]
+        .into_iter()
+        .map(|(a, b)| (a.to_owned(), b))
+        .collect();
 
         Scanner {
             source_iter: source.chars().collect(),
