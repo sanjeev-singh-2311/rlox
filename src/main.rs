@@ -35,18 +35,10 @@ pub fn main() {
         exit(64);
     }
     if argc == 1 {
-        match utils::run_file(argv[0].to_owned()) {
-            Err(e) => {
-                println!("{e:?}")
-            }
-            _ => (),
+        if let Err(e) = utils::run_file(&argv[0]) {
+            println!("{e:?}")
         }
-    } else {
-        match utils::run_prompt() {
-            Err(e) => {
-                println!("{e:?}")
-            }
-            _ => (),
-        }
+    } else if let Err(e) = utils::run_prompt() {
+        println!("{e:?}")
     }
 }

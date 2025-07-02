@@ -3,8 +3,8 @@ use crate::tokens::token::Token;
 use std::io::{BufRead, Write};
 use std::{fs, io, path::Path};
 
-pub fn run_file(path: String) -> Result<(), Box<dyn std::error::Error>> {
-    let file = fs::read(Path::new(&path))?;
+pub fn run_file(path: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let file = fs::read(Path::new(path))?;
     let program = String::from_utf8(file)?;
 
     run(program);
