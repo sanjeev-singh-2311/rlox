@@ -17,22 +17,22 @@ pub struct Scanner {
 impl Scanner {
     pub fn new(source: String) -> Scanner {
         let keyword_map: HashMap<String, TokenType> = [
-            ("and", TokenType::AND),
-            ("class", TokenType::CLASS),
-            ("else", TokenType::ELSE),
-            ("false", TokenType::FALSE),
-            ("for", TokenType::FOR),
-            ("fun", TokenType::FUN),
-            ("if", TokenType::IF),
-            ("nil", TokenType::NIL),
-            ("or", TokenType::OR),
-            ("print", TokenType::PRINT),
-            ("return", TokenType::RETURN),
-            ("super", TokenType::SUPER),
-            ("this", TokenType::THIS),
-            ("true", TokenType::TRUE),
-            ("var", TokenType::VAR),
-            ("while", TokenType::WHILE),
+            ("and", TokenType::And),
+            ("class", TokenType::Class),
+            ("else", TokenType::Else),
+            ("false", TokenType::False),
+            ("for", TokenType::For),
+            ("fun", TokenType::Fun),
+            ("if", TokenType::If),
+            ("nil", TokenType::Nil),
+            ("or", TokenType::Or),
+            ("print", TokenType::Print),
+            ("return", TokenType::Return),
+            ("super", TokenType::Super),
+            ("this", TokenType::This),
+            ("true", TokenType::True),
+            ("var", TokenType::Var),
+            ("while", TokenType::While),
         ]
         .into_iter()
         .map(|(a, b)| (a.to_owned(), b))
@@ -73,11 +73,11 @@ impl Scanner {
     }
 
     fn char_is_alpha(&self, c: char) -> bool {
-        (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
+        c.is_ascii_lowercase() || c.is_ascii_uppercase() || c == '_'
     }
 
     fn char_is_digit(&self, c: char) -> bool {
-        c >= '0' && c <= '9'
+        c.is_ascii_digit()
     }
 
     fn check_curr(&mut self, expected: char) -> bool {
@@ -107,7 +107,7 @@ impl Scanner {
         let text_type = self
             .keyword_map
             .get(&text)
-            .unwrap_or(&TokenType::IDENTIFIER);
+            .unwrap_or(&TokenType::Identifier);
         self.add_token(text_type.clone(), None);
     }
 
@@ -125,7 +125,7 @@ impl Scanner {
             .to_owned()
             .parse::<f32>();
         match literal {
-            Ok(_) => self.add_token(TokenType::NUMBER, Some(Box::new(literal))),
+            Ok(_) => self.add_token(TokenType::Number, Some(Box::new(literal))),
             Err(_) => show_error(self.line, "Invalid number literal somehow".to_owned()),
         }
     }
@@ -143,7 +143,7 @@ impl Scanner {
         self.advance();
 
         let value = self.source[self.start + 1..self.current - 1].to_owned();
-        self.add_token(TokenType::STRING, Some(Box::new(value)));
+        self.add_token(TokenType::String, Some(Box::new(value)));
     }
 
     fn lookahead_1(&self) -> char {
@@ -160,69 +160,68 @@ impl Scanner {
         self.source_iter[self.current + 1]
     }
 
-    pub fn scan_all_tokens(&mut self) -> () {
+    pub fn scan_all_tokens(&mut self) {
         while !self.is_at_end() {
             self.start = self.current;
             self.scan_token();
         }
         self.tokens.push(Token::new(
-            TokenType::EOF,
+            TokenType::Eof,
             "".to_owned(),
             Box::<Option<i32>>::new(None),
             self.line,
         ));
-        ()
     }
 
     fn scan_token(&mut self) {
         let c = self.advance();
 
         match c {
-            '(' => self.add_token(TokenType::LEFT_PAREN, None),
-            ')' => self.add_token(TokenType::RIGHT_PAREN, None),
-            '{' => self.add_token(TokenType::LEFT_BRACE, None),
-            '}' => self.add_token(TokenType::RIGHT_BRACE, None),
-            ',' => self.add_token(TokenType::COMMA, None),
-            '.' => self.add_token(TokenType::DOT, None),
-            '-' => self.add_token(TokenType::MINUS, None),
-            '+' => self.add_token(TokenType::PLUS, None),
-            ';' => self.add_token(TokenType::SEMICOLON, None),
-            '*' => self.add_token(TokenType::STAR, None),
+            '(' => self.add_token(TokenType::LeftParen, None),
+            ')' => self.add_token(TokenType::RightParen, None),
+            '{' => self.add_token(TokenType::LeftBrace, None),
+            '}' => self.add_token(TokenType::RightBrace, None),
+            ',' => self.add_token(TokenType::Comma, None),
+            '.' => self.add_token(TokenType::Dot, None),
+            '-' => self.add_token(TokenType::Minus, None),
+            '+' => self.add_token(TokenType::Plus, None),
+            ';' => self.add_token(TokenType::Semicolon, None),
+            '*' => self.add_token(TokenType::Star, None),
             '/' => {
                 if self.check_curr('/') {
                     while !self.is_at_end() && self.lookahead_1() != '\n' {
                         self.advance();
                     }
                 } else {
-                    self.add_token(TokenType::SLASH, None)
+                    self.add_token(TokenType::Slash, None)
                 }
             }
             '<' => {
                 if self.check_curr('=') {
-                    self.add_token(TokenType::LESS_EQUAL, None);
+                    self.add_token(TokenType::LessEqual, None);
                 } else {
-                    self.add_token(TokenType::LESS, None);
+                    self.add_token(TokenType::Less, None);
                 }
             }
             '>' => {
                 if self.check_curr('=') {
-                    self.add_token(TokenType::GREATER_EQUAL, None);
+                    self.add_token(TokenType::GreaterEqual, None);
                 } else {
-                    self.add_token(TokenType::GREATER, None);
+                    self.add_token(TokenType::Greater, None);
                 }
             }
             '=' => {
                 if self.check_curr('=') {
-                    self.add_token(TokenType::EQUAL_EQUAL, None);
+                    self.add_token(TokenType::EqualEqual, None);
                 } else {
-                    self.add_token(TokenType::EQUAL, None);
+                    self.add_token(TokenType::Equal, None);
                 }
             }
             '!' => {
                 if self.check_curr('=') {
-                    self.add_token(TokenType::BANG_EQUAL, None);
+                    self.add_token(TokenType::BangEqual, None);
                 } else {
-                    self.add_token(TokenType::BANG, None);
+                    self.add_token(TokenType::Bang, None);
                 }
             }
 
@@ -240,6 +239,5 @@ impl Scanner {
                 }
             }
         }
-        ()
     }
 }
