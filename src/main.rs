@@ -24,7 +24,6 @@ pub fn main() {
                 "not only are the args missing, the executable path itself is missing lol"
                     .to_owned(),
             );
-            exit(64)
         }
     };
     let argv: Vec<String> = arg_iter.collect();

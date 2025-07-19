@@ -1,6 +1,6 @@
 use std::process::exit;
 
-pub fn show_error(line: u32, message: String) {
+pub fn show_error(line: u32, message: String) -> ! {
     report(line, "", message)
 }
 
