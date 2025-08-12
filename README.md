@@ -1,2 +1,5 @@
 # rlox
-a tree-walk interpreter implemented in Rust
+
+Rust implementation of a simple tree walk interpreter (WIP)
+
+---
