@@ -1,3 +1,4 @@
+mod ast;
 mod scanner;
 mod tokens;
 mod utility;
